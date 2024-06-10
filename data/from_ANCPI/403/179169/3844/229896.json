@@ -1,0 +1,122 @@
+{
+    "displayFieldName": "INSPIRE_ID",
+    "features": [
+        {
+            "attributes": {
+                "IMMOVABLE_ID": 10006570137,
+                "INSPIRE_ID": "RO.403.179169.229896",
+                "NATIONAL_CADASTRAL_REFERENCE": "229896",
+                "OBJECTID": 117833169
+            },
+            "geometry": {
+                "rings": [
+                    [
+                        [
+                            587855.8680000007,
+                            326814.1180000007
+                        ],
+                        [
+                            587856.004999999,
+                            326810.7890000008
+                        ],
+                        [
+                            587859.2129999995,
+                            326810.2470000014
+                        ],
+                        [
+                            587858.8420000002,
+                            326805.561999999
+                        ],
+                        [
+                            587857.8399999999,
+                            326800.6429999992
+                        ],
+                        [
+                            587854.8779999986,
+                            326800.93400000036
+                        ],
+                        [
+                            587854.2019999996,
+                            326797.8049999997
+                        ],
+                        [
+                            587854.0610000007,
+                            326797.83300000057
+                        ],
+                        [
+                            587854.0100000016,
+                            326797.5769999996
+                        ],
+                        [
+                            587850.8399999999,
+                            326798.256000001
+                        ],
+                        [
+                            587850.9290000014,
+                            326798.4519999996
+                        ],
+                        [
+                            587852.0859999992,
+                            326804.05999999866
+                        ],
+                        [
+                            587850.4730000012,
+                            326804.3060000017
+                        ],
+                        [
+                            587851.0340000018,
+                            326808.63699999824
+                        ],
+                        [
+                            587852.6490000002,
+                            326808.4600000009
+                        ],
+                        [
+                            587852.4479999989,
+                            326814.01199999824
+                        ],
+                        [
+                            587855.8680000007,
+                            326814.1180000007
+                        ]
+                    ]
+                ]
+            }
+        }
+    ],
+    "fieldAliases": {
+        "IMMOVABLE_ID": "IMMOVABLE_ID",
+        "INSPIRE_ID": "INSPIRE_ID",
+        "NATIONAL_CADASTRAL_REFERENCE": "NATIONAL_CADASTRAL_REFERENCE",
+        "OBJECTID": "OBJECTID"
+    },
+    "fields": [
+        {
+            "alias": "OBJECTID",
+            "name": "OBJECTID",
+            "type": "esriFieldTypeOID"
+        },
+        {
+            "alias": "INSPIRE_ID",
+            "length": 30,
+            "name": "INSPIRE_ID",
+            "type": "esriFieldTypeString"
+        },
+        {
+            "alias": "NATIONAL_CADASTRAL_REFERENCE",
+            "length": 20,
+            "name": "NATIONAL_CADASTRAL_REFERENCE",
+            "type": "esriFieldTypeString"
+        },
+        {
+            "alias": "IMMOVABLE_ID",
+            "name": "IMMOVABLE_ID",
+            "type": "esriFieldTypeDouble"
+        }
+    ],
+    "geometryType": "esriGeometryPolygon",
+    "spatialReference": {
+        "latestWkid": 3844,
+        "wkid": 3844
+    }
+}

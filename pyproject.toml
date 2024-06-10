@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "etrs89-to-wgs84"
+version = "0.1.0"
+description = ""
+authors = ["Ionut <ionutnciocoiu@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyproj = "^3.6.1"
+geopandas = "^0.14.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
