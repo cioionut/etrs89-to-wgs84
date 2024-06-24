@@ -1,20 +1,38 @@
-# source https://medium.com/@calebjuma27/converting-from-wgs84-to-etrs89-b51157d79c70
+import os
+
+# third party libs
 import numpy as np
 import pyproj
+import geopandas as gpd
+
+# local
+# from utils import ensure_path_exists
 
 
-def cartesian_3D_from_lon_lat(long_degrees, lat_degrees, elevation_metres):
+def cartesian_3D_from_lon_lat_wgs84(long_degrees, lat_degrees, elevation_metres):
     geocent_cartesian_3D = pyproj.Proj(
         proj='geocent', ellps='WGS84', datum='WGS84')
     geographic_latlon = pyproj.Proj(
         proj='latlong', ellps='WGS84', datum='WGS84', radians=False)
-    # x_coord,y_coord,z_coord=pyproj.transform(geographic_latlon,geocent_cartesian_3D,long_degrees,lat_degrees,elevation_metres,radians=False)
     transformer = pyproj.Transformer.from_proj(
         geographic_latlon, geocent_cartesian_3D, always_xy=True)
     x_coord, y_coord, z_coord = transformer.transform(
         xx=long_degrees, yy=lat_degrees, zz=elevation_metres)
 
     return x_coord, y_coord, z_coord
+
+
+def lon_lat_from_cartesian_3D_grs80(x_coord, y_coord, z_coord):
+    geocent_cartesian_3D = pyproj.Proj(
+        # ETRS utilises the GRS80 ellipsoid. Unfortunately ETRS89 datum is not inbuilt
+        proj='geocent', ellps='GRS80', datum='WGS84')
+    geographic_latlon = pyproj.Proj(
+        proj='latlong', ellps='GRS80', datum='WGS84', radians=False)
+    transformer = pyproj.Transformer.from_proj(
+        geocent_cartesian_3D, geographic_latlon, always_xy=True)
+    long_degrees, lat_degrees, elevation_metres = transformer.transform(
+        xx=x_coord, yy=y_coord, zz=z_coord)
+    return long_degrees, lat_degrees, elevation_metres
 
 
 def ITRF2014_ETRF2014(x_coord, y_coord, z_coord, ITRF_epoch, **kwargs):
@@ -90,27 +108,9 @@ def ITRF2014_ETRF2014(x_coord, y_coord, z_coord, ITRF_epoch, **kwargs):
     return station_points_ETRF2014, station_velocity_tranformed
 
 
-def lon_lat_from_cartesian_3D(x_coord, y_coord, z_coord):
-    """
-    built in datums:WGS84, GGRS87, NAD38, NAD27, potsdam, carthage, hermannskogel, ire65, nzgd49, OSGB336.
-    built in ellipsoids: GRS80,airy,bessel,clrk66,intl,WGS60,WGS66,WGS72,WGS84,sphere
-    """
-    geocent_cartesian_3D = pyproj.Proj(
-        # ETRS utilises the GRS80 ellipsoid. Unfortunately ETRS89 datum is not inbuilt
-        proj='geocent', ellps='GRS80', datum='WGS84')
-    geographic_latlon = pyproj.Proj(
-        proj='latlong', ellps='GRS80', datum='WGS84', radians=False)
-    # long_degrees, lat_degrees, elevation_metres = pyproj.transform(geocent_cartesian_3D, geographic_latlon, x_coord, y_coord, z_coord)
-    transformer = pyproj.Transformer.from_proj(
-        geocent_cartesian_3D, geographic_latlon, always_xy=True)
-    long_degrees, lat_degrees, elevation_metres = transformer.transform(
-        xx=x_coord, yy=y_coord, zz=z_coord)
-    return long_degrees, lat_degrees, elevation_metres
-
-
 def test_original_docs():
     point_WGS = {"point_1": [13.2800773632584, 52.5590577266679, 52]}
-    x, y, z = cartesian_3D_from_lon_lat(
+    x, y, z = cartesian_3D_from_lon_lat_wgs84(
         point_WGS["point_1"][0], point_WGS["point_1"][1], point_WGS["point_1"][2])
     print(x, y, z)
 
@@ -118,7 +118,7 @@ def test_original_docs():
         x_coord=x, y_coord=y, z_coord=z, ITRF_epoch=2023.02, x_velocity=0, y_velocity=0, z_velocity=0, ETRF_epoch=2023.02)
     print(*new_station)
 
-    long, lat, elev = lon_lat_from_cartesian_3D(
+    long, lat, elev = lon_lat_from_cartesian_3D_grs80(
         new_station[0], new_station[1], new_station[2])
     print(long, lat, elev)
     # https://epncb.oma.be/_productsservices/coord_trans/index.php#results
@@ -134,11 +134,44 @@ def test_original_docs():
     # #comes to 85 cm 
 
 
+def itrf2014_to_etrf2014_lon_lat(lon, lat, elev, observation_epoch):
+    x, y, z = cartesian_3D_from_lon_lat_wgs84(lon, lat, elev)
+    new_station, new_velocity = ITRF2014_ETRF2014(
+        x_coord=x, y_coord=y, z_coord=z,
+        ITRF_epoch=observation_epoch,
+        x_velocity=0, y_velocity=0, z_velocity=0,
+        ETRF_epoch=observation_epoch)
+    long, lat, elev = lon_lat_from_cartesian_3D_grs80(
+        new_station[0], new_station[1], new_station[2])
+    return long. lat, elev
+
+
 def main():
-    test_original_docs()
+    ############
+    # settings #
+    ############
+    area_id = 229896  # scari rulante Universitte
+    county_id = 403  # Bucuresti
+    admin_unit_id = 179169  # Bucuresti, Sector 3
+    refsys = 3844
+
+    target_refsys = 9059  # ETRF89
+    target_refsys = 9067  # ETRF2000
+    target_refsys = 9755  # wgs84 latest - https://en.wikipedia.org/wiki/World_Geodetic_System
+    target_refsys = 9000  # ITRF2014
+    # target_refsys = 9990  # ITRF2020
+
+    # define data directories
+    ancpi_data_dir = os.path.join(
+        'data', 'from_ANCPI', str(county_id), str(admin_unit_id), str(refsys))
+    # read file
+    source_path = os.path.join(ancpi_data_dir, f"{area_id}.json")
+    poly_gdf = gpd.read_file(source_path)
+    assert (isinstance(poly_gdf, gpd.GeoDataFrame))
     # test_my_implementaion()
+    # test_original_docs()
+    print(poly_gdf)
 
 
-# Run the main function when the script is executed
 if __name__ == "__main__":
     main()

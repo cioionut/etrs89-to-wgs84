@@ -1,3 +1,4 @@
+import math
 import os
 import pathlib
 
@@ -7,10 +8,11 @@ import geopandas as gpd
 from shapely.geometry import Polygon
 
 # local
-from utils import ensure_path_exists
+from utils import ensure_path_exists, extract_coords
+from pytransdatro import TransRO
 
 
-def stereo70_to_etrs89(x: float, y: float, z: float, grid_file_path: str) -> tuple[float, float, float]:
+def stereo70_to_etrs89_with_gridfile(x: float, y: float, z: float, grid_file_path: str) -> tuple[float, float, float]:
     """ Convert from EPSG:3844 to EPSG:4258 """
     stereo70 = pyproj.Proj(
         f"+proj=sterea +lat_0=46 +lon_0=25 \
@@ -26,10 +28,14 @@ def stereo70_to_etrs89(x: float, y: float, z: float, grid_file_path: str) -> tup
     return lat, lon, alt
 
 
-def extract_coords(geo_df: gpd.GeoDataFrame) -> list[tuple[float, float]]:
-    poly = geo_df.iloc[0]['geometry']
-    coords = poly.exterior.coords
-    return coords
+def stereo70_to_etrs89_with_pytransdatro(t: TransRO, north: float, east: float, height: float = None):
+    h = None
+    if height is None:
+        lat, lon = t.st70_to_etrs89(n=north, e=east)
+    else:
+        lat, lon, h = t.st70_to_etrs89(north, east, height)
+
+    return math.degrees(lat), math.degrees(lon), h
 
 
 def main():
@@ -41,10 +47,11 @@ def main():
     admin_unit_id = 179169  # Bucuresti, Sector 3
     refsys = 3844
 
-    target_refsys = 9059  # ETRF2000
+    target_refsys = 9059  # ETRF89
     target_refsys = 9067  # ETRF2000
     target_refsys = 9755  # wgs84 latest - https://en.wikipedia.org/wiki/World_Geodetic_System
-    # target_refsys = 9990  # ITRF2014
+    target_refsys = 9000  # ITRF2014
+    # target_refsys = 9990  # ITRF2020
 
     # define data directories
     ancpi_data_dir = os.path.join(
@@ -69,7 +76,7 @@ def main():
         east, north = stereo70[0], stereo70[1]
         break
     print(east, north)
-    lat, lon, alt = stereo70_to_etrs89(
+    lat, lon, alt = stereo70_to_etrs89_with_gridfile(
         x=east,
         y=north,
         z=height,
@@ -78,8 +85,19 @@ def main():
     alt = 112
     if height == alt:
         raise ValueError("Please adjust manually the altitude, the conversion only works in 2d")
-
     print(lat, lon, alt)
+
+    # convert using PyTransdatRo
+    t = TransRO()
+    lat, lon, alt = stereo70_to_etrs89_with_pytransdatro(
+        t=t,
+        north=north,
+        east=east,
+        height=height
+    )
+    print(lat, lon, alt)
+    # http://geo-spatial.org/transdatonline/
+    # 44.43571077216;26.10206401747
 
 
 if __name__ == "__main__":
