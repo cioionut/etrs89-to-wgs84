@@ -85,12 +85,10 @@ def main():
     admin_unit_id = 179169  # Bucuresti, Sector 3
     refsys = 3844
 
-    target_refsys = 4258  # ETRS89
+    # target_refsys = 4258  # ETRS89
     # target_refsys = 9059  # ETRF89
     # target_refsys = 9067  # ETRF2000
-    # target_refsys = 9755  # wgs84 latest - https://en.wikipedia.org/wiki/World_Geodetic_System
-    # target_refsys = 9000  # ITRF2014
-    # target_refsys = 9990  # ITRF2020
+    target_refsys = 9069  # ETRF2014
 
     # define data directories
     ancpi_data_dir = os.path.join(
