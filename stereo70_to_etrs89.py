@@ -57,7 +57,7 @@ def stereo70_to_etrs89_shape(poly_gdf: gpd.GeoDataFrame, height: float, target_r
             north=north,
             east=east,
             height=height)
-        new_points.append([lon, lat])
+        new_points.append([lon, lat, alt])
 
     new_poly = Polygon(new_points)
     new_poly_gdf.set_geometry([new_poly], inplace=True,
@@ -80,7 +80,7 @@ def main():
     ############
     # settings #
     ############
-    area_id = 229896  # scari rulante Universitte
+    area_id = 229896  # scari rulante Universitate
     county_id = 403  # Bucuresti
     admin_unit_id = 179169  # Bucuresti, Sector 3
     refsys = 3844
@@ -88,7 +88,8 @@ def main():
     # target_refsys = 4258  # ETRS89
     # target_refsys = 9059  # ETRF89
     # target_refsys = 9067  # ETRF2000
-    target_refsys = 9069  # ETRF2014
+    target_refsys = 7931  # ETRF2000 - Ellipsoidal 3D CS https://epsg.io/7931
+    # target_refsys = 9069  # ETRF2014
 
     # define data directories
     ancpi_data_dir = os.path.join(
@@ -110,13 +111,12 @@ def main():
     height = 64  # assume height
     conversion_data_dir = os.path.join(conversion_data_dir, f"{area_id}")
     ensure_path_exists(conversion_data_dir)
-    destination_path = os.path.join(
-        conversion_data_dir, f"{area_id}.shp")
+    destination_path = os.path.join(conversion_data_dir, f"{area_id}.shp")
     stereo70_to_etrs89_and_save(
         poly_gdf=poly_gdf,
         height=height,
         target_refsys_epsg=target_refsys,
-        output_file_type='shp',
+        output_file_type='shp' if destination_path.split('.')[-1] == 'shp' else 'geojson',
         destination_path=destination_path
     )
     return
