@@ -1,0 +1,27 @@
+{
+    "type": "FeatureCollection",
+    "name": "229896",
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "urn:ogc:def:crs:EPSG::7930"
+        }
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "epoch_in_DOY_YEAR": "169/2003",
+                "epoch_in_YYYY_DD": "2003.46"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    4093761.206,
+                    2007793.576,
+                    4445129.764
+                ]
+            }
+        }
+    ]
+}
