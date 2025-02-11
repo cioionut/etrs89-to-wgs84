@@ -11,15 +11,15 @@
         {
             "type": "Feature",
             "properties": {
-                "epoch_in_DOY_YEAR": "001/2010",
-                "epoch_in_YYYY_DD": "2010.00"
+                "epoch_in_DOY_YEAR": "169/2003",
+                "epoch_in_YYYY_DD": "2003.46"
             },
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    4093761.226,
-                    2007793.579,
-                    4445129.770
+                    4093761.206,
+                    2007793.576,
+                    4445129.764
                 ]
             }
         }

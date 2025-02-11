@@ -190,6 +190,7 @@ def test_gemini_generated_func():
 
 if __name__ == "__main__":
     # test_gemini_generated_func()
-    timestamp = yearday_to_date("2003.169")
+    # timestamp = yearday_to_date("2003.169")
+    timestamp = yearday_to_date("2010.001")
     dec_year = decimal_year(year=timestamp.year, month=timestamp.month, day=timestamp.day)
     print(dec_year)

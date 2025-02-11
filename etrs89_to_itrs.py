@@ -68,7 +68,7 @@ def main():
     admin_unit_id = "tei"
 
     # set epoch of observations
-    observation_epoch = 2003.46
+    observation_epoch = 2010.00
 
     # reference system
     # source_refsys = 4258
