@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "bucu00rou",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::9988" } },
+"features": [
+{ "type": "Feature", "properties": { }, "geometry": { "type": "Point", "coordinates": [ 4093760.782088109757751, 2007793.890541520901024, 4445130.023812451399863 ] } }
+]
+}
