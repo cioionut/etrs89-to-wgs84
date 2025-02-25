@@ -80,9 +80,11 @@ def main():
     ############
     # settings #
     ############
-    area_id = 229896  # scari rulante Universitate
+    # area_id = 229896  # scari rulante Universitate
+    area_id = "bucu00rou"  # Antena Facultatea Constructii
     county_id = 403  # Bucuresti
-    admin_unit_id = 179169  # Bucuresti, Sector 3
+    # admin_unit_id = 179169  # Bucuresti, Sector 3
+    admin_unit_id = "tei"
     refsys = 3844
 
     # target_refsys = 4258  # ETRS89

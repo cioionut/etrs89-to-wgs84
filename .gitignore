@@ -1,3 +1,7 @@
+data/from_ANCPI/289
+data/convert_pyproj/289
+data/convert_transdatro/289
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
